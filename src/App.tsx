@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard'
 import OverviewPage from './pages/OverviewPage';
 import LoginPage from './pages/LoginPage';
 import MapPage from './pages/MapPage';
+import SocialPage from './pages/SocialPage';
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
         <Route path='/' element={<Dashboard />}>
           <Route index element={<OverviewPage />} />
           <Route path='map' element={<MapPage />} />
-          <Route path='social' element={<LoginPage />} />
+          <Route path='social' element={<SocialPage />} />
         </Route>
       </Routes>
     </HashRouter>
