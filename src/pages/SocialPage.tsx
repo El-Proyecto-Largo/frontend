@@ -1,93 +1,50 @@
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
+import { useQuery } from "react-query";
+import axios from "axios";
+import PostCard from "@/components/PostCard";
+
+const userLatitude = () => Number(localStorage.getItem('latitude') || -1);
+const userLongitude = () => Number(localStorage.getItem('longitude') || -1);
+
+async function getPosts() {
+  const response = await axios.post("http://localhost:5000/api/findlocalposts", {
+    latitude: userLatitude,
+    longitude: userLongitude,
+    distance: 2,
+  });
+
+  return response.data;
+}
 
 export default function SocialPage() {
-    return (
-        <>
-        <div className="flex p-10 gap-5 flex-wrap place-content-center">
-          <Card>
-            <CardHeader>
-              <CardTitle>awesomesauce</CardTitle>
-              <CardDescription>meow</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <img src="https://purr.objects-us-east-1.dream.io/i/AwO5H.jpg" width={200}/>    
-            </CardContent>
-            <CardFooter>footer</CardFooter>
-          </Card>
-  
-          <Card>
-            <CardHeader>
-              <CardTitle>awesomesauce</CardTitle>
-              <CardDescription>meow</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <img src="https://purr.objects-us-east-1.dream.io/i/iphone2015006.jpg" width={200}/>    
-            </CardContent>
-            <CardFooter>footer</CardFooter>
-          </Card>
-  
-          <Card>
-            <CardHeader>
-              <CardTitle>awesomesauce</CardTitle>
-              <CardDescription>meow</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <img src="https://purr.objects-us-east-1.dream.io/i/iJ6Hu.gif" width={200} />    
-            </CardContent>
-            <CardFooter>footer</CardFooter>
-          </Card>
-  
-          <Card>
-            <CardHeader>
-              <CardTitle>awesomesauce</CardTitle>
-              <CardDescription>meow</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <img src="https://purr.objects-us-east-1.dream.io/i/iJ6Hu.gif" width={200}/>    
-            </CardContent>
-            <CardFooter>footer</CardFooter>
-          </Card>
-  
-          <Card>
-            <CardHeader>
-              <CardTitle>awesomesauce</CardTitle>
-              <CardDescription>meow</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <img src="https://purr.objects-us-east-1.dream.io/i/iJ6Hu.gif" width={200}/>    
-            </CardContent>
-            <CardFooter>footer</CardFooter>
-          </Card>
-  
-          <Card>
-            <CardHeader>
-              <CardTitle>awesomesauce</CardTitle>
-              <CardDescription>meow</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <img src="https://purr.objects-us-east-1.dream.io/i/iJ6Hu.gif" width={200}/>    
-            </CardContent>
-            <CardFooter>footer</CardFooter>
-          </Card>
-  
-          <Card>
-            <CardHeader>
-              <CardTitle>awesomesauce</CardTitle>
-              <CardDescription>meow</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <img src="https://purr.objects-us-east-1.dream.io/i/iJ6Hu.gif" width={200}/>    
-            </CardContent>
-            <CardFooter>footer</CardFooter>
-          </Card>
-        </div>
-      </>
-    );
+  const {
+    data: posts,
+    error,
+    isLoading,
+  } = useQuery("postsData", getPosts);
+
+  if (isLoading) {
+    return <p>Loading...</p>
+  }
+
+  if (error) {
+    return <p>Error retrieving data.</p>
+  }
+
+  return (
+    <>
+      <div className="p-5 2xl:columns-6 xl:columns-5 lg:columns-4 sm:columns-3 columns-2 gap-4">
+        {posts.map((post) => (
+          <PostCard
+            title={post.title}
+            body={post.body}
+            image={post.image}
+            latitude={post.latitude}
+            longitude={post.longitude}
+            author={post.authorId}
+            tags={post.tags}
+          />
+        ))}
+      </div>
+    </>
+  );
 }

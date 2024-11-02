@@ -13,6 +13,43 @@ export default function MapView( {className} ) {
 
   const[toggleStates, setToggleStates] = useState({layer1: false, layer2: false, layer3: false});
 
+  const layers: TileLayer[] = [
+    new TileLayer({
+      source: new OSM(),
+    }),
+    // new TileLayer({
+    //   source: new TileWMS({
+    //     url: 'https://mesonet.agron.iastate.edu/cgi-bin/wms/goes_east.cgi?',
+    //     params: {'LAYERS': 'fulldisk_ch13', 'TILED': true},
+    //     serverType: 'geoserver',
+    //     // Countries have transparency, so do not fade tiles:
+    //     transition: 0,
+    //   }),
+    //   opacity: 0.25,
+    //   visible: toggleStates.layer0,
+    // }),
+    new TileLayer({
+      source: new TileArcGISRest({
+        url: 'https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity/MapServer',
+      }),
+      visible: toggleStates.layer1,
+    }),
+    new TileLayer({
+      source: new TileArcGISRest({
+        url: "https://mapservices.weather.noaa.gov/tropical/rest/services/tropical/NHC_tropical_weather/MapServer",
+      }),
+      visible: toggleStates.layer2,
+      opacity: 0.25,
+    }),
+    new TileLayer({
+      source: new TileArcGISRest({
+        url: "https://mapservices.weather.noaa.gov/eventdriven/rest/services/WWA/watch_warn_adv/MapServer",
+      }),
+      visible: toggleStates.layer3,
+      opacity: 0.5,
+    }),
+  ];
+
   const handleToggle = (key) => {
     console.log(`Toggling ${key}`); // <-- This should log on every toggle
     setToggleStates((prevState) => ({
@@ -22,42 +59,6 @@ export default function MapView( {className} ) {
   };
 
   useEffect(() => {
-    let layers: TileLayer[] = [
-      new TileLayer({
-        source: new OSM(),
-      }),
-      // new TileLayer({
-      //   source: new TileWMS({
-      //     url: 'https://mesonet.agron.iastate.edu/cgi-bin/wms/goes_east.cgi?',
-      //     params: {'LAYERS': 'fulldisk_ch13', 'TILED': true},
-      //     serverType: 'geoserver',
-      //     // Countries have transparency, so do not fade tiles:
-      //     transition: 0,
-      //   }),
-      //   opacity: 0.25,
-      // }),
-      new TileLayer({
-        source: new TileArcGISRest({
-          url: 'https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity/MapServer',
-        }),
-        visible: toggleStates.layer1,
-      }),
-      new TileLayer({
-        source: new TileArcGISRest({
-          url: "https://mapservices.weather.noaa.gov/tropical/rest/services/tropical/NHC_tropical_weather/MapServer",
-        }),
-        visible: toggleStates.layer2,
-        opacity: 0.25,
-      }),
-      new TileLayer({
-        source: new TileArcGISRest({
-          url: "https://mapservices.weather.noaa.gov/eventdriven/rest/services/WWA/watch_warn_adv/MapServer",
-        }),
-        visible: toggleStates.layer3,
-        opacity: 0.5,
-      }),
-    ];
-
     const map: Map = new Map({
       layers: layers,
       target: "map",
@@ -84,7 +85,6 @@ export default function MapView( {className} ) {
       <div className='absolute top-20 right-10 bg-white p-4 shadow-lg rounded-md z-10'>
         <div className="p-4 pt-1">
           <h1 className="text-lg font-bold mb-2">Toggle Layers On/Off</h1>
-
           <div>
             <h3>Radar</h3>
             <Switch id='radar-switch' checked={toggleStates.layer1} onCheckedChange={() => handleToggle('layer1')}/>

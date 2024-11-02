@@ -20,7 +20,7 @@ export default function OverviewPage() {
               <CardDescription>Map view (probably going to use the same component)</CardDescription>
             </CardHeader>
             <CardContent>
-              <MapView className="h-96"/>
+              {/* <MapView className="h-96"/> */}
             </CardContent>
           </Card>
         </div>
