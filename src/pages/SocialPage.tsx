@@ -1,9 +1,23 @@
 import { useQuery } from "react-query";
 import axios from "axios";
+
 import PostCard from "@/components/PostCard";
+import LoadingPage from "./LoadingPage";
+import ErrorPage from "./ErrorPage";
 
 const userLatitude = () => Number(localStorage.getItem('latitude') || -1);
 const userLongitude = () => Number(localStorage.getItem('longitude') || -1);
+
+export interface PostDatabaseProps {
+  title: string,
+  body: string,
+  image: string | null,
+  latitude: number,
+  longitude: number,
+  authorId: string,
+  tags: string[] | null,
+  _id: string,
+}
 
 async function getPosts() {
   const response = await axios.post("http://localhost:5000/api/findlocalposts", {
@@ -22,28 +36,24 @@ export default function SocialPage() {
     isLoading,
   } = useQuery("postsData", getPosts);
 
-  if (isLoading) {
-    return <p>Loading...</p>
-  }
-
-  if (error) {
-    return <p>Error retrieving data.</p>
-  }
+  if (isLoading) return <LoadingPage />
+  if (error) return <ErrorPage errorMessage={`${error}`}/>
 
   return (
     <>
       <div className="p-5 2xl:columns-6 xl:columns-5 lg:columns-4 sm:columns-3 columns-2 gap-4">
-        {posts.map((post) => (
-          <PostCard
+        {posts.map((post: PostDatabaseProps) =>
+          <PostCard key={post._id}
             title={post.title}
             body={post.body}
             image={post.image}
             latitude={post.latitude}
             longitude={post.longitude}
-            author={post.authorId}
+            authorId={post.authorId}
             tags={post.tags}
+            id={post._id}
           />
-        ))}
+        )}
       </div>
     </>
   );

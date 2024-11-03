@@ -9,31 +9,36 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 
-interface PostCardProps {
+import { Link } from "react-router-dom";
+
+export interface PostCardProps {
   title: string,
   body: string,
   image: string | null,
   latitude: number,
   longitude: number,
-  author: string,
+  authorId: string,
   tags: string[] | null,
+  id: string,
 }
 
-export default function PostCard({ title, body, image, latitude, longitude, author, tags }: PostCardProps) {
+// TODO
+
+export default function PostCard({ title, body, image, latitude, longitude, authorId, tags, id }: PostCardProps) {
   return (
     <Card className="break-inside-avoid mb-5">
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle><Link to={`/posts/${id}`}>{title}</Link></CardTitle>
         <CardDescription>
-          <div className="flex gap-2 flex-wrap">
-            {tags ? tags.map((tag) => (<Badge>{tag}</Badge>)): <></>}
-          </div>
+          {body}
         </CardDescription>
 
       </CardHeader>
       {image ? <CardContent><img src={image} className="object-cover h-48 w-48"/></CardContent> : <></>}
       <CardFooter>
-        {body}
+        <div className="flex gap-2 flex-wrap">
+          {tags ? tags.map((tag) => (<Badge>{tag}</Badge>)) : <></>}
+        </div>
       </CardFooter>
     </Card>
   );

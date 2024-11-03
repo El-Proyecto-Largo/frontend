@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route} from 'react-router-dom';
+import { Routes, Route, BrowserRouter, HashRouter} from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import './App.css';
@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage';
 import MapPage from './pages/MapPage';
 import SocialPage from './pages/SocialPage';
 import { useEffect } from 'react';
+import PostPage from './pages/PostPage';
 
 const queryClient = new QueryClient();
 
@@ -24,15 +25,16 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <HashRouter>
+      <BrowserRouter>
         <Routes>
           <Route path='/' element={<Dashboard />}>
             <Route index element={<OverviewPage />} />
             <Route path='map' element={<MapPage />} />
-            <Route path='social' element={<SocialPage />} />
+            <Route path='posts' element={<SocialPage />} />
+            <Route path='posts/:id' element={<PostPage />} />
           </Route>
         </Routes>
-      </HashRouter>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }

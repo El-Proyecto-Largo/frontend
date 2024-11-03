@@ -26,7 +26,7 @@ const mainItems = [
   },
   {
     title: "Social",
-    url: "/social",
+    url: "/posts",
     icon: UserRound,
   },
 ]

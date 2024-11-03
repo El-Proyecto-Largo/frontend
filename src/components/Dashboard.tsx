@@ -3,13 +3,15 @@ import { Outlet } from "react-router-dom"
 import AppSidebar from "./AppSidebar"
 import TopBar from "./TopBar"
 
+// TODO
+
 export default function Dashboard() {
   return (
     <SidebarProvider>
       <AppSidebar />
       <div className="flex flex-col flex-1">
         <TopBar />
-        <main className="">
+        <main className="h-[calc(100vh-4rem)]">
           <Outlet />
         </main>
       </div>

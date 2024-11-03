@@ -12,7 +12,7 @@ import {
 export default function OverviewPage() {
   return (
     <>
-      <div className="flex min-h-screen p-10 gap-5">
+      <div className="flex p-10 gap-5">
         <div className="grow">
           <Card>
             <CardHeader>

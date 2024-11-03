@@ -79,9 +79,8 @@ export default function MapView( {className} ) {
 
   return (
     <div>
-      <div id="map" className={className}>
-  
-      </div>
+      <div id="map" className={className} />
+
       <div className='absolute top-20 right-10 bg-white p-4 shadow-lg rounded-md z-10'>
         <div className="p-4 pt-1">
           <h1 className="text-lg font-bold mb-2">Toggle Layers On/Off</h1>
