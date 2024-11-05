@@ -27,20 +27,22 @@ export interface PostCardProps {
 
 export default function PostCard({ title, body, image, latitude, longitude, authorId, tags, id }: PostCardProps) {
   return (
-    <Card className="break-inside-avoid mb-5 bg-no-repeat bg-cover">
-      <CardHeader>
-        <CardTitle><Link to={`/posts/${id}`}>{title}</Link></CardTitle>
-        <CardDescription>
-          {body}
-        </CardDescription>
+    <Link to={`/posts/${id}`}>
+      <Card className="break-inside-avoid mb-5 bg-no-repeat bg-cover">
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>
+            {body}
+          </CardDescription>
 
-      </CardHeader>
-      {image ? <CardContent><img src={image} className="object-cover h-48 w-48"/></CardContent> : <></>}
-      <CardFooter>
-        <div className="flex gap-2 flex-wrap">
-          {tags ? tags.map((tag) => (<Badge>{tag}</Badge>)) : <></>}
-        </div>
-      </CardFooter>
-    </Card>
+        </CardHeader>
+        {image ? <CardContent><img src={image} className="object-cover h-48 w-48 rounded-md"/></CardContent> : <></>}
+        <CardFooter>
+          <div className="flex gap-2 flex-wrap">
+            {tags ? tags.map((tag) => (<Badge>{tag}</Badge>)) : <></>}
+          </div>
+        </CardFooter>
+      </Card>
+    </Link>
   );
 }

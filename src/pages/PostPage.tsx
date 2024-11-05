@@ -8,6 +8,7 @@ import ErrorPage from "./ErrorPage";
 import { useState } from "react";
 import { PostDatabaseProps } from "./SocialPage";
 import PostThreadAuthor from "@/components/PostThreadAuthor";
+import PostPageBar from "@/components/PostPageBar";
 
 // TODO
 
@@ -46,28 +47,31 @@ export default function PostPage() {
   if (postError || repliesError) return <ErrorPage errorMessage={`Error!`} />
 
   return (
-    <div className="p-5">
-      {mainPost ?
-        <div>
-          <PostThreadMainCard
-            key={mainPost._id}
-            title={mainPost.title}
-            body={mainPost.body}
-            image={mainPost.image}
-            latitude={mainPost.latitude}
-            longitude={mainPost.longitude}
-            authorId={mainPost.authorId}
-            tags={mainPost.tags}
-            id={mainPost._id}
-          />
-        </div> : <></>}
-      <div className="flex flex-col gap-3">
-        {replies?.data.map((reply: ReplyProps) =>
-          <div key={reply._id}>
-            <PostThreadReplyCard body={reply.body} image={reply.image} authorId={reply.authorId} id={reply._id} />
-          </div>
-        )}
+    <>
+      <PostPageBar />
+      <div className="p-5">
+        {mainPost ?
+          <div>
+            <PostThreadMainCard
+              key={mainPost._id}
+              title={mainPost.title}
+              body={mainPost.body}
+              image={mainPost.image}
+              latitude={mainPost.latitude}
+              longitude={mainPost.longitude}
+              authorId={mainPost.authorId}
+              tags={mainPost.tags}
+              id={mainPost._id}
+            />
+          </div> : <></>}
+        <div className="flex flex-col gap-3">
+          {replies?.data.map((reply: ReplyProps) =>
+            <div key={reply._id}>
+              <PostThreadReplyCard body={reply.body} image={reply.image} authorId={reply.authorId} id={reply._id} />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
