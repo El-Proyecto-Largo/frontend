@@ -24,9 +24,10 @@ export interface PostCardProps {
 
 // TODO
 
+
 export default function PostCard({ title, body, image, latitude, longitude, authorId, tags, id }: PostCardProps) {
   return (
-    <Card className="break-inside-avoid mb-5">
+    <Card className="break-inside-avoid mb-5 bg-no-repeat bg-cover">
       <CardHeader>
         <CardTitle><Link to={`/posts/${id}`}>{title}</Link></CardTitle>
         <CardDescription>

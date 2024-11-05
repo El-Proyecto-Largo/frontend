@@ -48,9 +48,8 @@ export default function PostPage() {
   return (
     <div className="p-5">
       {mainPost ?
-        <div className="flex items-center">
-          <PostThreadAuthor authorId={mainPost.authorId}/>
-          <PostThreadMainCard className="grow"
+        <div>
+          <PostThreadMainCard
             key={mainPost._id}
             title={mainPost.title}
             body={mainPost.body}
@@ -62,7 +61,7 @@ export default function PostPage() {
             id={mainPost._id}
           />
         </div> : <></>}
-      <div>
+      <div className="flex flex-col gap-3">
         {replies?.data.map((reply: ReplyProps) =>
           <div key={reply._id}>
             <PostThreadReplyCard body={reply.body} image={reply.image} authorId={reply.authorId} id={reply._id} />

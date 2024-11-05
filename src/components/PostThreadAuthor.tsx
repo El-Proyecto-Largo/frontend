@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useQuery } from "react-query";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface AuthorProps {
   id: string,
@@ -34,13 +35,16 @@ export default function PostThreadAuthor({ authorId }: { authorId: string }) {
   }
 
   return (
-    <div>
-      <figure>
-        {author.data.image ? (
-          <img src={author.data.image} className="object-cover h-32 w-32" />
-        ) : <img src="/src/assets/default.png" className="object-cover h-32 w-32" />}
-        <figcaption>{`${author.data.firstName} ${author.data.lastName}`}</figcaption>
-      </figure>
+    <div className="flex gap-3 items-center">
+      <Avatar>
+        <AvatarImage src={author?.data.image}/>
+        <AvatarFallback>{author?.data.firstName[0] + author?.data.lastName[0]}</AvatarFallback>
+      </Avatar>
+      <div className="flex flex-col">
+        <h3>{`${author?.data.firstName} ${author?.data.lastName}`}</h3>
+        <p className="text-sm text-muted-foreground">@{author?.data.username}</p>
+      </div>
+
     </div>
   )
 }

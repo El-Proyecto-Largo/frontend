@@ -11,23 +11,32 @@ import { Badge } from "@/components/ui/badge";
 
 import { PostCardProps } from "./PostCard";
 
+import PostThreadAuthor from "./PostThreadAuthor";
+
+import { dateFromObjectId } from "@/lib/utils";
+
 // TODO
 
 export default function PostThreadMainCard({ title, body, image, latitude, longitude, authorId, tags, id }: PostCardProps) {
   return (
-    <Card className="break-inside-avoid mb-5">
-      <CardHeader>
+    <Card className="mb-5 grow">
+      <CardHeader className="flex flex-col gap-2">
+        <PostThreadAuthor authorId={authorId}/>
         <CardTitle>{title}</CardTitle>
-        <CardDescription>
-          {body}
-        </CardDescription>
-
-      </CardHeader>
-      {image ? <CardContent><img src={image} className="object-cover h-48 w-48" /></CardContent> : <></>}
-      <CardFooter>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex flex-row flex-wrap gap-1">
           {tags ? tags.map((tag, index) => (<Badge key={index}>{tag}</Badge>)) : <></>}
         </div>
+      </CardHeader>
+
+      <CardContent className="gap-2">
+        {body}
+        {image ? <img src={image} className="rounded-sm object-scale-down mt-3"/> : <></>}
+      </CardContent>
+
+      <CardFooter className="">
+        <CardDescription>
+          {`${dateFromObjectId(id).toLocaleTimeString()} · ${dateFromObjectId(id).toDateString()} `}
+        </CardDescription>
       </CardFooter>
     </Card>
   );
