@@ -20,7 +20,7 @@ export interface PostDatabaseProps {
 }
 
 async function getPosts() {
-  const response = await axios.post("http://localhost:5000/api/findlocalposts", {
+  const response = await axios.post("http://localhost:5000/api/getlocalposts", {
     latitude: userLatitude,
     longitude: userLongitude,
     distance: 2,

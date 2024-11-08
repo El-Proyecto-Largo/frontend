@@ -1,4 +1,4 @@
-import { Settings, LayoutDashboard, MapIcon, UserRound, CircleHelp } from "lucide-react"
+import { Settings, LayoutDashboard, MapIcon, UserRound, CircleHelp, LogOutIcon } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -41,7 +41,7 @@ const otherItems = [
     title: "Help",
     url: "/help",
     icon: CircleHelp,
-  }
+  },
 ]
 
 export default function AppSidebar() {
@@ -75,6 +75,12 @@ export default function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem >
+                <SidebarMenuButton onClick={() => window.location.href = "/login"}>
+                  <LogOutIcon />
+                  <p>Logout</p>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
           </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

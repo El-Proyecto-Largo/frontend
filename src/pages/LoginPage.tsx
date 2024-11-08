@@ -1,13 +1,11 @@
-import PageTitle from '../components/PageTitle.tsx';
 import Login from '../components/Login.tsx';
 
-const LoginPage = () => {
+export function LoginPage() {
   return (
-    <div>
-      <PageTitle />
+    <div className="flex flex-row min-h-screen justify-center items-center">
       <Login />
     </div>
   );
-};
+}
 
 export default LoginPage;

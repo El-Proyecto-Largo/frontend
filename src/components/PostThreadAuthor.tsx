@@ -15,7 +15,6 @@ interface AuthorProps {
 
 export default function PostThreadAuthor({ authorId }: { authorId: string }) {
   async function getAuthor() {
-    console.log(authorId)
     const response = await axios.get(`http://localhost:5000/api/users/${authorId}`);
     return response;
   }
@@ -24,14 +23,23 @@ export default function PostThreadAuthor({ authorId }: { authorId: string }) {
     data: author,
     error,
     isLoading,
-  } = useQuery(["authorData", authorId], getAuthor);
+  } = useQuery({
+    queryKey: ["authorData", authorId],
+    queryFn: getAuthor,
+  });
 
-  if (isLoading ) {
-    return <p>loading</p>
-  }
-
-  if (error) {
-    return <p>error</p>
+  if (isLoading || error) {
+    return (
+      <div className="flex gap-3 items-center">
+      <Avatar>
+        <AvatarFallback></AvatarFallback>
+      </Avatar>
+      <div className="flex flex-col">
+        <h3>...</h3>
+        <p className="text-sm text-muted-foreground">...</p>
+      </div>
+    </div>
+    )
   }
 
   return (
@@ -44,7 +52,6 @@ export default function PostThreadAuthor({ authorId }: { authorId: string }) {
         <h3>{`${author?.data.firstName} ${author?.data.lastName}`}</h3>
         <p className="text-sm text-muted-foreground">@{author?.data.username}</p>
       </div>
-
     </div>
   )
 }

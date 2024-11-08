@@ -1,5 +1,11 @@
 import { useState } from 'react';
 
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Link } from 'react-router-dom';
+
 function Login() {
   const [message, setMessage] = useState('');
   const [loginName, setLoginName] = useState('');
@@ -17,15 +23,15 @@ function Login() {
 
       var res = JSON.parse(await response.text());
 
-      if (res.id <= 0) {
-        setMessage('User/Password combination incorrect');
+      if (res.error) {
+        setMessage(res.error);
       }
       else {
-        var user = { firstName: res.firstName, lastName: res.lastName, id: res.id }
+        let user = { token: res.token, userId: res.userId, username: res.username, email: res.email}
         localStorage.setItem('user_data', JSON.stringify(user));
 
         setMessage('');
-        window.location.href = '/cards';
+        window.location.href = '/';
       }
     }
     catch (error: any) {
@@ -43,14 +49,40 @@ function Login() {
   }
 
   return (
-    <div id="loginDiv">
-      <span id="inner-title">PLEASE LOG IN</span><br />
-      <input type="text" id="loginName" placeholder="Username" onChange={handleSetLoginName} /><br />
-      <input type="password" id="loginPassword" placeholder="Password" onChange={handleSetPassword} /><br />
-      <input type="submit" id="loginButton" className="buttons" value="Do It"
-        onClick={doLogin} />
-      <span id="loginResult"></span>
-    </div>
+    <Card className="mx-auto max-w-sm">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl font-bold">Overcastly</CardTitle>
+        <CardDescription>Please enter your email (or username) and password.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Login</Label>
+            <Input id="loginName" type="email" placeholder="name@example.com" required onChange={handleSetLoginName}/>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input id="loginPassword" type="password" required onChange={handleSetPassword}/>
+          </div>
+          <div className='flex gap-3'>
+            
+            <Button type="submit" className="w-full" onClick={doLogin}>
+              Login
+            </Button>
+            
+            <Link to="/register">
+              <Button type="submit" variant="secondary" className="w-full">
+                Register
+              </Button>                
+            </Link>
+            
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className='justify-center align-middle'>
+      {message}
+      </CardFooter>
+    </Card>
   );
 };
 

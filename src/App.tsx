@@ -10,6 +10,7 @@ import MapPage from './pages/MapPage';
 import SocialPage from './pages/SocialPage';
 import { useEffect } from 'react';
 import PostPage from './pages/PostPage';
+import RegisterPage from './pages/RegisterPage';
 
 const queryClient = new QueryClient();
 
@@ -27,8 +28,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
+          <Route path='login' element={<LoginPage />} />
+          <Route path='register' element={<RegisterPage />} />
           <Route path='/' element={<Dashboard />}>
-            <Route index element={<OverviewPage />} />
+            <Route index element={<SocialPage />} />
             <Route path='map' element={<MapPage />} />
             <Route path='posts' element={<SocialPage />} />
             <Route path='posts/:id' element={<PostPage />} />

@@ -23,7 +23,7 @@ export default function PostPage() {
   }
 
   async function getReplies() {
-    const response = await axios.get(`http://localhost:5000/api/posts/${id}/replies`);
+    const response = await axios.get(`http://localhost:5000/api/posts/${id}/getreplies`);
     return response;
   }
 
