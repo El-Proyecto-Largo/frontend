@@ -28,7 +28,7 @@ function Login() {
       }
       else {
         let user = { token: res.token, userId: res.userId, username: res.username, email: res.email}
-        localStorage.setItem('user_data', JSON.stringify(user));
+        localStorage.setItem('userData', JSON.stringify(user));
 
         setMessage('');
         window.location.href = '/';

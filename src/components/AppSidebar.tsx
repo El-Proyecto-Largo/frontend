@@ -76,7 +76,7 @@ export default function AppSidebar() {
                 </SidebarMenuItem>
               ))}
               <SidebarMenuItem >
-                <SidebarMenuButton onClick={() => window.location.href = "/login"}>
+                <SidebarMenuButton onClick={() => {localStorage.removeItem("userData"); window.location.href = "/login"}}>
                   <LogOutIcon />
                   <p>Logout</p>
                 </SidebarMenuButton>
