@@ -4,9 +4,10 @@ import axios from "axios";
 import PostCard from "@/components/PostCard";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
+import SocialBar from "@/components/SocialBar";
 
-const userLatitude = () => Number(localStorage.getItem('latitude') || -1);
-const userLongitude = () => Number(localStorage.getItem('longitude') || -1);
+const userLatitude = Number(localStorage.getItem('latitude') || -1);
+const userLongitude = Number(localStorage.getItem('longitude') || -1);
 
 export interface PostDatabaseProps {
   title: string,
@@ -23,7 +24,7 @@ async function getPosts() {
   const response = await axios.post("http://localhost:5000/api/getlocalposts", {
     latitude: userLatitude,
     longitude: userLongitude,
-    distance: 2,
+    distance: 12,
   });
 
   return response.data;
@@ -41,6 +42,7 @@ export default function SocialPage() {
 
   return (
     <>
+      {/* <SocialBar /> */}
       <div className="p-5 2xl:columns-6 xl:columns-5 lg:columns-4 sm:columns-3 columns-2 gap-4">
         {posts.map((post: PostDatabaseProps) =>
           <PostCard key={post._id}

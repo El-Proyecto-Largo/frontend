@@ -15,12 +15,21 @@ import RegisterPage from './pages/RegisterPage';
 
 const queryClient = new QueryClient();
 import axios from 'axios';
+import LoadingPage from './pages/LoadingPage';
+
+
 
 function App() {
   const [isValidToken, setIsValidToken] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   function PrivateRoute() {
-    return isValidToken ? <Outlet /> : <Navigate to="/login" replace />;
+    if (!isLoading) {
+      return isValidToken ? <Outlet /> : <Navigate to="/login" replace />;
+    }
+    else if (isLoading) {
+      return <></>
+    }
   }
   
   function AnonymousRoute() {
@@ -35,6 +44,7 @@ function App() {
 
     const checkToken = async () => {
       if (token && userId) {
+        setIsLoading(true);
         try {
           const headers = {
             'Content-Type': 'application/json',
@@ -46,9 +56,11 @@ function App() {
     
           if (response.status === 200) {
             setIsValidToken(true);
+            setIsLoading(false);
           }
           else {
             setIsValidToken(false);
+            setIsLoading(false);
           }
         } catch (error) {
           console.log(error);
@@ -56,21 +68,22 @@ function App() {
       }
       else {
         setIsValidToken(false);
+        setIsLoading(false);
       }
     }
 
-    if (token) {
-      checkToken();
-    }
+    checkToken();
 
   }, [])
 
   useEffect(() => {
     const userLatitude = localStorage.getItem('latitude');
     const userLongitude = localStorage.getItem('longitude')
+    const zipCode = localStorage.getItem('zip');
 
-    if (!userLatitude) localStorage.setItem('latitude', '27.7')
-    if (!userLongitude) localStorage.setItem('longitude', '-77')
+    if (!userLatitude) localStorage.setItem('latitude', '27.7');
+    if (!userLongitude) localStorage.setItem('longitude', '-77');
+    if (!zipCode) localStorage.setItem('zip', '32826');
   }, []);
 
   return (

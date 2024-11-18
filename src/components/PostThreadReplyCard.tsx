@@ -13,6 +13,12 @@ import {
 import PostThreadAuthor from "./PostThreadAuthor";
 
 import { dateFromObjectId } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { Separator } from "./ui/separator";
+import { Button } from "./ui/button";
+import { Edit2Icon, TrashIcon } from "lucide-react";
+import PostControls from "./PostControls";
+
 
 export interface ReplyProps {
   title?: string,
@@ -23,16 +29,19 @@ export interface ReplyProps {
   authorId: string,
   tags?: string[] | null,
   id: string,
+  userId: string,
 }
 
 // TODO
 
-export default function PostThreadReplyCard({ body, image, authorId, id }: ReplyProps) {
+export default function PostThreadReplyCard({ body, image, authorId, id, userId }: ReplyProps) {
+  
   return (
     <div>
-      <Card className="grow">
-        <CardHeader>
+      <Card className="grow" data-post-id={id}>
+        <CardHeader className="flex flex-1 flex-row justify-between">
           <PostThreadAuthor authorId={authorId}/>
+          {userId == authorId ? <PostControls id={id}/> : <></>}
         </CardHeader>
         <CardContent>
           {body}

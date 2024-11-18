@@ -5,7 +5,7 @@ import PostThreadMainCard from "@/components/PostThreadMainCard";
 import PostThreadReplyCard, { ReplyProps } from "@/components/PostThreadReplyCard";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PostDatabaseProps } from "./SocialPage";
 import PostThreadAuthor from "@/components/PostThreadAuthor";
 import PostPageBar from "@/components/PostPageBar";
@@ -16,6 +16,21 @@ export default function PostPage() {
   const { id } = useParams();
 
   const [mainPost, setMainPost] = useState<null | PostDatabaseProps>(null);
+  const [repliesJSON, setRepliesJSON] = useState<any>(null);
+
+  const bottomPageRef = useRef<null | HTMLDivElement>(null);
+
+  const [userData, setUserData] = useState([]);
+
+  useEffect(() => {
+    const userDataString = localStorage.getItem("userData");
+    if (userDataString) {
+      setUserData(JSON.parse(userDataString))
+      console.log(userData);
+    }
+    else console.log("Error parsing user data, perhaps the token is invalid?");
+    
+  }, []);
 
   async function getPost() {
     const response = await axios.get(`http://localhost:5000/api/posts/${id}`);
@@ -33,7 +48,7 @@ export default function PostPage() {
     isLoading: postLoading,
   } = useQuery("postData", getPost, {
     onSuccess: (post) => {
-      setMainPost(post.data[0]);
+      setMainPost(post.data);
     }
   });
 
@@ -41,14 +56,18 @@ export default function PostPage() {
     data: replies,
     error: repliesError,
     isLoading: repliesLoading,
-  } = useQuery("repliesData", getReplies)
+  } = useQuery("repliesData", getReplies, {
+    onSuccess: (replies) => {
+      setRepliesJSON(replies);
+    }
+  })
 
   if (postLoading || repliesLoading) return <LoadingPage />
   if (postError || repliesError) return <ErrorPage errorMessage={`Error!`} />
 
   return (
     <>
-      <PostPageBar />
+      {mainPost ? <PostPageBar id={mainPost._id} bottomRef={bottomPageRef}/> : <></>}
       <div className="p-5">
         {mainPost ?
           <div>
@@ -65,12 +84,13 @@ export default function PostPage() {
             />
           </div> : <></>}
         <div className="flex flex-col gap-3">
-          {replies?.data.map((reply: ReplyProps) =>
+          {repliesJSON?.data.map((reply: ReplyProps) =>
             <div key={reply._id}>
-              <PostThreadReplyCard body={reply.body} image={reply.image} authorId={reply.authorId} id={reply._id} />
+              <PostThreadReplyCard body={reply.body} image={reply.image} authorId={reply.authorId} id={reply._id} userId={userData["userId"]}/>
             </div>
           )}
         </div>
+        <div ref={bottomPageRef}></div>
       </div>
     </>
   );
