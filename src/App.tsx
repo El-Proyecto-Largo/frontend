@@ -33,9 +33,19 @@ function App() {
     return isValidToken ? <Navigate to="/" replace /> : <Outlet />;
   }
 
+  function isValidJSON(json: string | null) {
+    try {
+      JSON.parse(json);
+    }
+    catch (e) {
+      return false
+    }
+    return true;
+  }
+
   useEffect(() => {
     const userDataString = localStorage.getItem("userData");
-    const userData = userDataString ? JSON.parse(userDataString) : null;
+    const userData = isValidJSON(userDataString) ? JSON.parse(userDataString) : null;
     const token = userData ? userData["token"] : null;
     const userId = userData ? userData["userId"] : null;
 

@@ -84,11 +84,11 @@ export default function PostPage() {
             />
           </div> : <></>}
         <div className="flex flex-col gap-3">
-          {repliesJSON?.data.map((reply: ReplyProps) =>
+          {repliesJSON ? repliesJSON.data.map((reply: ReplyProps) =>
             <div key={reply._id}>
               <PostThreadReplyCard body={reply.body} image={reply.image} authorId={reply.authorId} id={reply._id} userId={userData["userId"]}/>
             </div>
-          )}
+          ) : <></>}
         </div>
         <div ref={bottomPageRef}></div>
       </div>

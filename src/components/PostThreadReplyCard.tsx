@@ -41,7 +41,7 @@ export default function PostThreadReplyCard({ body, image, authorId, id, userId 
       <Card className="grow" data-post-id={id}>
         <CardHeader className="flex flex-1 flex-row justify-between">
           <PostThreadAuthor authorId={authorId}/>
-          {userId == authorId ? <PostControls id={id}/> : <></>}
+          {userId == authorId ? <PostControls id={id} type="reply" /> : <></>}
         </CardHeader>
         <CardContent>
           {body}

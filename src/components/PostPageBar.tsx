@@ -8,10 +8,9 @@ import { RefObject, useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { toast } from "sonner"
 import PostThreadAuthor from "./PostThreadAuthor";
+import { getUserData } from "@/lib/utils";
 
 // TODO
-
-
 
 export default function PostPageBar({ id, bottomRef }: {id: string, bottomRef: RefObject<HTMLDivElement>}) {
   const queryClient = useQueryClient();
@@ -21,14 +20,9 @@ export default function PostPageBar({ id, bottomRef }: {id: string, bottomRef: R
   const [userData, setUserData] = useState([]);
 
   useEffect(() => {
-    const userDataString = localStorage.getItem("userData");
-    // const userData = userDataString ? JSON.parse(userDataString) : null;
-    if (userDataString) {
-      setUserData(JSON.parse(userDataString))
-    }
-    else console.log("Error parsing user data, perhaps the token is invalid?");
-    
+    setUserData(getUserData());  
   }, []);
+
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer: ${userData["token"]}`,

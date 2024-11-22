@@ -5,6 +5,8 @@ import { MapPinIcon, PlusIcon } from "lucide-react";
 
 import PostThreadAuthor from "./PostThreadAuthor";
 import { useEffect, useState } from "react";
+import NewPostForm from "./NewPostForm";
+import NewPostDialog from "./NewPostDialog";
 
 export default function TopBar() {
   const [zip, setZip] = useState("");
@@ -28,9 +30,7 @@ export default function TopBar() {
 
         <div className="flex gap-3">
           {/* <PostThreadAuthor authorId={JSON.parse(localStorage.getItem("userData")).userId} /> */}
-          <Button variant="ghost">
-            <PlusIcon />
-          </Button>
+          <NewPostDialog />
 
           <Button variant="ghost">
             <MapPinIcon />

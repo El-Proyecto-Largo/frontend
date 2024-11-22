@@ -14,20 +14,16 @@ import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { getUserData } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
-export default function PostControls( {id}: {id: string} ) {
+export default function PostControls( {id, type}: {id: string, type: string} ) {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [userData, setUserData] = useState([]);
   
-
   useEffect(() => {
-    const userDataString = localStorage.getItem("userData");
-    // const userData = userDataString ? JSON.parse(userDataString) : null;
-    if (userDataString) {
-      setUserData(JSON.parse(userDataString))
-    }
-    else console.log("Error parsing user data, perhaps the token is invalid?");
-    
+    setUserData(getUserData());
   }, []);
 
   const headers = {
@@ -42,6 +38,9 @@ export default function PostControls( {id}: {id: string} ) {
     onSuccess: () => {
       queryClient.invalidateQueries(["repliesData"]);
       toast("Your post has been deleted.");
+      if (type === "main") {
+        navigate(`/posts`);
+      }
     }
   })
 
