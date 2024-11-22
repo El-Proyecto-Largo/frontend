@@ -1,11 +1,11 @@
-import { Routes, Route, BrowserRouter, HashRouter, Navigate, Outlet} from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from "react-query";
+import { Routes, Route, BrowserRouter, Navigate, Outlet} from 'react-router-dom';
+import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from "react-query";
 import { useState } from 'react';
 
 import './App.css';
 
 import Dashboard from './components/Dashboard'
-import OverviewPage from './pages/OverviewPage';
+// import OverviewPage from './pages/OverviewPage';
 import LoginPage from './pages/LoginPage';
 import MapPage from './pages/MapPage';
 import SocialPage from './pages/SocialPage';
@@ -15,9 +15,6 @@ import RegisterPage from './pages/RegisterPage';
 
 const queryClient = new QueryClient();
 import axios from 'axios';
-import LoadingPage from './pages/LoadingPage';
-
-
 
 function App() {
   const [isValidToken, setIsValidToken] = useState(false);
@@ -50,7 +47,7 @@ function App() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer: ${token}`,
           }
-          const response = await axios.post("http://localhost:5000/api/authenticate", {"userId": userId}, {
+          const response = await axios.get("http://localhost:5000/api/authenticate", {
             headers: headers,
           });
     
@@ -102,14 +99,6 @@ function App() {
             <Route path='login' element={<LoginPage />} />
             <Route path='register' element={<RegisterPage />} />
           </Route>
-          {/* <Route path='login' element={<LoginPage />} />
-          <Route path='register' element={<RegisterPage />} />
-          <Route path='/' element={<Dashboard />}>
-            <Route index element={<SocialPage />} />
-            <Route path='map' element={<MapPage />} />
-            <Route path='posts' element={<SocialPage />} />
-            <Route path='posts/:id' element={<PostPage />} />
-          </Route> */}
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
