@@ -1,5 +1,7 @@
+import axios from "axios";
 import { clsx, type ClassValue } from "clsx"
 import { useEffect } from "react";
+import { useQuery } from "react-query";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -11,8 +13,6 @@ export function dateFromObjectId(objectId: string) {
 }
 
 export function getUserData(): any {
-  // useEffect(() => {
-  // }, []);
   const userDataString = localStorage.getItem("userData");
     try {
       const userData = userDataString ? JSON.parse(userDataString) : null;
@@ -23,3 +23,7 @@ export function getUserData(): any {
       return null;
     }
 }
+
+// export function getLatLongFromZip(zip: string) {
+  
+// }

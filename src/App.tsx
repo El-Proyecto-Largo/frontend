@@ -15,6 +15,7 @@ import RegisterPage from './pages/RegisterPage';
 
 const queryClient = new QueryClient();
 import axios from 'axios';
+import OverviewPage from './pages/OverviewPage';
 
 function App() {
   const [isValidToken, setIsValidToken] = useState(false);
@@ -88,8 +89,8 @@ function App() {
     const userLongitude = localStorage.getItem('longitude')
     const zipCode = localStorage.getItem('zip');
 
-    if (!userLatitude) localStorage.setItem('latitude', '27.7');
-    if (!userLongitude) localStorage.setItem('longitude', '-77');
+    if (!userLatitude) localStorage.setItem('latitude', '28.58');
+    if (!userLongitude) localStorage.setItem('longitude', '-81.19');
     if (!zipCode) localStorage.setItem('zip', '32826');
   }, []);
 
@@ -99,7 +100,7 @@ function App() {
         <Routes>
           <Route element={<PrivateRoute />}>
             <Route path='/' element={<Dashboard />}>
-              <Route index element={<SocialPage />} />
+              <Route index element={<OverviewPage />} />
               <Route path='map' element={<MapPage />} />
               <Route path='posts' element={<SocialPage />} />
               <Route path='posts/:id' element={<PostPage />} />
