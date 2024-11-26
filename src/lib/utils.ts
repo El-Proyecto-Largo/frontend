@@ -23,7 +23,3 @@ export function getUserData(): any {
       return null;
     }
 }
-
-// export function getLatLongFromZip(zip: string) {
-  
-// }

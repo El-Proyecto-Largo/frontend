@@ -42,7 +42,6 @@ export default function SocialPage() {
 
   return (
     <>
-      {/* <SocialBar /> */}
       <div className="p-5 2xl:columns-6 xl:columns-5 lg:columns-4 sm:columns-3 columns-2 gap-4">
         {posts.map((post: PostDatabaseProps) =>
           <PostCard key={post._id}

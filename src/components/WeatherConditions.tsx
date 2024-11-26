@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { WindIcon } from "lucide-react";
+import { CloudIcon, CloudSunIcon, SunIcon, WindIcon } from "lucide-react";
 
 export default function WeatherConditions() {
   const [lat, setLat] = useState(localStorage.getItem('latitude'));
@@ -66,7 +66,22 @@ export default function WeatherConditions() {
 
   if (forecastQuery.isLoading) {
     return (
-      <p>loading...</p>
+      <div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Weather</CardTitle>
+            <CardDescription>In your area!</CardDescription>
+          </CardHeader>
+
+          <CardContent className="flex justify-center">
+            <SunIcon className="animate-spin"/>
+          </CardContent>
+
+          <CardFooter>
+            Please wait...
+          </CardFooter>
+        </Card>
+      </div>
     );
   }
   else if (forecastQuery.error) {

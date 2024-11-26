@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { PostDatabaseProps } from "./SocialPage";
 import PostThreadAuthor from "@/components/PostThreadAuthor";
 import PostPageBar from "@/components/PostPageBar";
+import { toast } from "sonner";
 
 // TODO
 
@@ -59,11 +60,25 @@ export default function PostPage() {
   } = useQuery("repliesData", getReplies, {
     onSuccess: (replies) => {
       setRepliesJSON(replies);
-    }
+    },
+    enabled: Boolean(post),
   })
 
-  if (postLoading || repliesLoading) return <LoadingPage />
-  if (postError || repliesError) return <ErrorPage errorMessage={`Error!`} />
+  if (postLoading) {
+    return (
+      <div className="h-[calc(100vh-4rem)]">
+        <LoadingPage />
+      </div>
+    );
+  }
+
+  if (postError || repliesError) {
+    return (
+      <>
+        <ErrorPage errorMessage={`Error!`} />
+      </>
+    );
+  }
 
   return (
     <>

@@ -1,43 +1,49 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import { MapPinIcon } from "lucide-react";
+import { Button } from "./ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import LocationForm from "./LocationForm";
 
 export default function LocationDialog() {
-  const [zipCode, setZipCode] = useState("");
+  const [locationMetadata, setLocationMetadata] = useState(null);
 
   useEffect(() => {
-    const userLatitude = localStorage.getItem('latitude');
-    const userLongitude = localStorage.getItem('longitude')
-    const zipCode = localStorage.getItem('zip');
-  });
-
-  async function getLatLong() {
-    const response = await axios.get(`https://nominatim.openstreetmap.org/search`, {
-      params: {
-        q: zipCode,
-        countrycodes: "us",
-        format: "json",
+    const metadata = localStorage.getItem('locationMetadata');
+    if (metadata) {
+      try {
+        const parsedMetadata = JSON.parse(metadata);
+        setLocationMetadata(parsedMetadata);
       }
-    });
-
-    return response;
-  }
-
-  const {
-    data: latlong,
-    error,
-    isLoading,
-  } = useQuery({
-    queryKey: ["latlongData"],
-    queryFn: getLatLong,
-    staleTime: Infinity,
-    cacheTime: Infinity,
-    retry: false,
-    enabled: false,
-  });
+      catch (error) {
+        console.log("Unable to parse location metadata.");
+      }
+      
+    }
+  }, []);
 
   return (
-    <>
-    </>
+    <Sheet>
+      <SheetTrigger>
+        <Button variant="ghost">
+          <MapPinIcon />
+          {locationMetadata ? <p className="">{locationMetadata.name}</p> : <p>No location!</p>}
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="sm:max-w-md">
+        <SheetHeader className="gap-3">
+          <SheetTitle>Set Location</SheetTitle>
+        </SheetHeader>
+        <LocationForm />
+      </SheetContent>
+    </Sheet>
   );
 }

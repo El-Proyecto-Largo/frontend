@@ -7,19 +7,11 @@ import PostThreadAuthor from "./PostThreadAuthor";
 import { useEffect, useState } from "react";
 import NewPostForm from "./NewPostForm";
 import NewPostDialog from "./NewPostDialog";
+import LocationDialog from "./LocationDialog";
 
 export default function TopBar() {
-  const [zip, setZip] = useState("");
-
-  useEffect(() => {
-    const zipCode = localStorage.getItem('zip');
-    if (zipCode) {
-      setZip(zipCode);
-    }
-  }, []);
-
   return (
-    <nav className="flex flex-no-wrap z-10 bg-background sticky top-0 w-full h-16 p-5 gap-3 items-center shadow-sm mx-auto">
+    <nav className="flex flex-no-wrap z-10 bg-background sticky top-0 w-screen md:w-full h-16 p-5 gap-3 items-center shadow-sm mx-auto">
       <SidebarTrigger />
       <Separator orientation="vertical" />
 
@@ -28,14 +20,11 @@ export default function TopBar() {
           <h1 className="font-semibold">Overcastly</h1>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-1">
           {/* <PostThreadAuthor authorId={JSON.parse(localStorage.getItem("userData")).userId} /> */}
           <NewPostDialog />
 
-          <Button variant="ghost">
-            <MapPinIcon />
-            {zip ? <p>{zip}</p> : <p>No location!</p>}
-          </Button>
+          <LocationDialog />
         </div>
       </div>
     </nav>

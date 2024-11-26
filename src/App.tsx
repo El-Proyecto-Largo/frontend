@@ -66,11 +66,17 @@ function App() {
             setIsValidToken(true);
             setIsLoading(false);
           }
+          else if (response.status == 403) {
+            setIsValidToken(false);
+            setIsLoading(false);
+            localStorage.removeItem('userData');
+          }
           else {
             setIsValidToken(false);
             setIsLoading(false);
           }
         } catch (error) {
+          localStorage.removeItem('userData');
           console.log(error);
         }
       }
@@ -87,11 +93,11 @@ function App() {
   useEffect(() => {
     const userLatitude = localStorage.getItem('latitude');
     const userLongitude = localStorage.getItem('longitude')
-    const zipCode = localStorage.getItem('zip');
+    const locationMetadata = localStorage.getItem('locationMetadata');
 
-    if (!userLatitude) localStorage.setItem('latitude', '28.58');
-    if (!userLongitude) localStorage.setItem('longitude', '-81.19');
-    if (!zipCode) localStorage.setItem('zip', '32826');
+    if (!userLatitude) localStorage.setItem('latitude', '28.567');
+    if (!userLongitude) localStorage.setItem('longitude', '-81.208');
+    if (!locationMetadata) localStorage.setItem('locationMetadata', '{"place_id":279873444,"licence":"Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright","osm_type":"node","osm_id":154012096,"lat":"28.5667957","lon":"-81.2076407","class":"place","type":"village","place_rank":19,"importance":0.3935662231745403,"addresstype":"village","name":"Alafaya","display_name":"Alafaya, Orange County, Florida, 32826, United States","boundingbox":["28.5467957","28.5867957","-81.2276407","-81.1876407"]}');
   }, []);
 
   return (
