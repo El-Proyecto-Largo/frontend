@@ -15,7 +15,7 @@ interface AuthorProps {
 
 export default function ProfilePicture({ authorId }: { authorId: string }) {
   async function getAuthor() {
-    const response = await axios.get(`${import.meta.env.BASE_URL}/api/users/${authorId}`);
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/${authorId}`);
     return response;
   }
 

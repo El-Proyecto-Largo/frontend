@@ -33,7 +33,7 @@ export default function PostControls( {id, type}: {id: string, type: string} ) {
 
   const mutation = useMutation({
     mutationFn: () => {
-      return axios.delete(`${import.meta.env.BASE_URL}/api/deletepost/${id}`, {headers: headers});
+      return axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/deletepost/${id}`, {headers: headers});
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["repliesData"]);

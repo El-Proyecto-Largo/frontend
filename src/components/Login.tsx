@@ -18,7 +18,7 @@ function Login() {
     let js = JSON.stringify(obj);
 
     try {
-      const response = await fetch(`${import.meta.env.BASE_URL}/api/login`,
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/login`,
         { method: 'POST', body: js, headers: { 'Content-Type': 'application/json' } });
 
       let res = JSON.parse(await response.text());

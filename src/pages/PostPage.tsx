@@ -34,12 +34,12 @@ export default function PostPage() {
   }, []);
 
   async function getPost() {
-    const response = await axios.get(`${import.meta.env.BASE_URL}/api/posts/${id}`);
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/posts/${id}`);
     return response;
   }
 
   async function getReplies() {
-    const response = await axios.get(`${import.meta.env.BASE_URL}/api/posts/${id}/getreplies`);
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/posts/${id}/getreplies`);
     return response;
   }
 

@@ -88,7 +88,7 @@ export default function NewPostForm({ setOpen }) {
       newPost["latitude"] = localStorage.getItem("latitude");
       newPost["longitude"] = localStorage.getItem('longitude');
       return axios.post(
-        `${import.meta.env.BASE_URL}/api/createpost`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/createpost`,
         newPost,
         { headers: headers}
       );

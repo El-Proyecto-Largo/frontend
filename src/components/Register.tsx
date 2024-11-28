@@ -28,7 +28,7 @@ export default function Register() {
     var js = JSON.stringify(obj);
 
     try {
-      const response = await fetch(`${import.meta.env.BASE_URL}/api/registeruser`,
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/registeruser`,
         { method: 'POST', body: js, headers: { 'Content-Type': 'application/json' } });
 
       var res = JSON.parse(await response.text());

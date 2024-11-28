@@ -58,7 +58,7 @@ function App() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer: ${token}`,
           }
-          const response = await axios.get(`${import.meta.env.BASE_URL}/api/authenticate`, {
+          const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/authenticate`, {
             headers: headers,
           });
     
