@@ -31,7 +31,7 @@ export default function PostPageBar({ id, bottomRef }: {id: string, bottomRef: R
   const mutation = useMutation({
     mutationFn: (newReply) => {
       return axios.post(
-        "http://localhost:5000/api/createreply", 
+        `${import.meta.env.BASE_URL}/api/createreply`, 
         newReply, 
         {headers: headers}
       );

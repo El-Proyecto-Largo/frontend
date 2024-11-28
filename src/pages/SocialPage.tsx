@@ -21,7 +21,7 @@ export interface PostDatabaseProps {
 }
 
 async function getPosts() {
-  const response = await axios.post("http://localhost:5000/api/getlocalposts", {
+  const response = await axios.post(`${import.meta.env.BASE_URL}/api/getlocalposts`, {
     latitude: userLatitude,
     longitude: userLongitude,
     distance: 12,

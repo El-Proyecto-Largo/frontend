@@ -14,14 +14,14 @@ function Login() {
   async function doLogin(event: any): Promise<void> {
     event.preventDefault();
 
-    var obj = { login: loginName, password: loginPassword };
-    var js = JSON.stringify(obj);
+    let obj = { login: loginName, password: loginPassword };
+    let js = JSON.stringify(obj);
 
     try {
-      const response = await fetch('http://localhost:5000/api/login',
+      const response = await fetch(`${import.meta.env.BASE_URL}/api/login`,
         { method: 'POST', body: js, headers: { 'Content-Type': 'application/json' } });
 
-      var res = JSON.parse(await response.text());
+      let res = JSON.parse(await response.text());
 
       if (res.error) {
         setMessage(res.error);

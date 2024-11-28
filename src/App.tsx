@@ -58,7 +58,7 @@ function App() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer: ${token}`,
           }
-          const response = await axios.get("http://localhost:5000/api/authenticate", {
+          const response = await axios.get(`${import.meta.env.BASE_URL}/api/authenticate`, {
             headers: headers,
           });
     

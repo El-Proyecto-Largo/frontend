@@ -15,7 +15,7 @@ interface AuthorProps {
 
 export default function PostThreadAuthor({ authorId }: { authorId: string }) {
   async function getAuthor() {
-    const response = await axios.get(`http://localhost:5000/api/users/${authorId}`);
+    const response = await axios.get(`${import.meta.env.BASE_URL}/api/users/${authorId}`);
     return response;
   }
 
