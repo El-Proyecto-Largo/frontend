@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "./ui/textarea"
 import { useEffect, useState } from "react"
-import { getUserData } from "@/lib/utils"
+import { convertToBase64, getUserData } from "@/lib/utils"
 import ProfilePicture from "./ProfilePicture"
 import { useMutation, useQueryClient } from "react-query"
 
@@ -28,10 +28,11 @@ import axios from "axios"
 import { toast } from "sonner"
 import { Navigate, useNavigate } from "react-router-dom"
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
+import { TagsInput } from "./ui/tags-input"
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-// TODO: image functionality still broken, 
 const formSchema = z.object({
   title: z
     .string()
@@ -42,21 +43,14 @@ const formSchema = z.object({
     .min(1, { message: "Enter body text." })
     .max(1000, { message: "Maximum word count is 1000 words." }),
   image: z
-    .custom<File | undefined>()
-    .refine(
-      (file) => {
-        console.log('File object for size check:', file);  // Log the actual file object
-        return !file || file.size <= MAX_FILE_SIZE;
-      },
-      { message: "Maximum image size is 5 MB." }
-    )
-    .refine(
-      (file) => {
-        console.log('File object for type check:', file);  // Log the actual file object
-        return !file || ACCEPTED_IMAGE_TYPES.includes(file?.type);
-      },
-      { message: ".jpg, .jpeg, .png, .webp files are accepted only" }
-    ),
+    .instanceof(File).optional().nullable()
+    .refine((file) => {
+      return !file || file.size <= MAX_IMAGE_SIZE;
+    }, `File size must be less than 5 MB`)
+    .refine((file) => {
+      return !file || ACCEPTED_IMAGE_TYPES.includes(file.type);
+    }, 'File must be of either .png, .jpg, or .webp format.'),
+
 });
 
 export default function NewPostForm({ setOpen }) {
@@ -64,7 +58,8 @@ export default function NewPostForm({ setOpen }) {
   const navigate = useNavigate();
 
   const [userData, setUserData] = useState([]);
-  
+  const [tags, setTags] = useState<string[]>([]);
+
   useEffect(() => {
     setUserData(getUserData());
   }, []);
@@ -74,7 +69,7 @@ export default function NewPostForm({ setOpen }) {
     defaultValues: {
       title: "",
       body: "",
-      image: "",
+      image: null,
     }
   });
 
@@ -84,20 +79,29 @@ export default function NewPostForm({ setOpen }) {
   }
 
   const mutation = useMutation({
-    mutationFn: (newPost) => {
-      newPost["latitude"] = localStorage.getItem("latitude");
-      newPost["longitude"] = localStorage.getItem('longitude');
+    mutationFn: async (newPost) => {
+      let base64Image = null;
+      if (newPost.image) {
+        base64Image = await convertToBase64(newPost.image);
+      }
       return axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/createpost`,
-        newPost,
-        { headers: headers}
+        {
+          title: newPost.title,
+          body: newPost.body,
+          image: base64Image,
+          latitude: localStorage.getItem("latitude"),
+          longitude: localStorage.getItem('longitude'),
+          tags: tags,
+        },
+        { headers: headers }
       );
     },
     onSuccess: (postData) => {
-      console.log(postData.data.postId);
       queryClient.invalidateQueries(["postsData"]);
       navigate(`posts/${postData.data.postId}`);
       setOpen(false);
+      setTags([]);
     },
     onError: (error) => {
       toast("Unable to create new post: " + error);
@@ -106,6 +110,7 @@ export default function NewPostForm({ setOpen }) {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    console.log(tags);
     mutation.mutate(values);
   }
 
@@ -145,11 +150,17 @@ export default function NewPostForm({ setOpen }) {
             <FormItem>
               {/* <FormLabel>Image</FormLabel> */}
               <FormControl>
-                <Input type="file" id="image" />
+                <Input type="file" id="image" onChange={(e) => field.onChange(e.target.files?.[0])} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
+        />
+        <TagsInput 
+          value={tags}
+          onValueChange={setTags}
+          placeholder="Enter tags"
+          className="w-full"
         />
         <div className="flex justify-end mt-3">
           <Button type="submit">Create Post</Button>

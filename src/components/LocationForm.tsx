@@ -82,13 +82,10 @@ export default function LocationForm() {
     console.log(lat);
     console.log(lon);
     
-    toast("Successfully updated location to " + location.name + "!", {
-      description: "Refreshing page in 3 seconds...",
-    });
 
     setTimeout(function() {
       window.location.reload();
-    }, 3000)
+    }, 500)
   }
 
   function onZipSubmit(values: z.infer<typeof zipSchema>) {

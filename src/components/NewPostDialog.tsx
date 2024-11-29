@@ -35,28 +35,6 @@ export default function NewPostDialog() {
   }, []);
 
   return (
-    // <Dialog>
-    //   <DialogTrigger asChild>
-    //     <Button variant="ghost">
-    //       <PlusIcon />
-    //     </Button>
-    //   </DialogTrigger>
-    //   <DialogContent className="sm:max-w-md">
-    //     <DialogHeader className="gap-3">
-    //       <DialogTitle>Create Post</DialogTitle>
-    // <div className="flex justify-center align-middle md:justify-normal md:align-baseline">
-    //   {userData ? <PostThreadAuthor authorId={userData["userId"]}/> : <></>}
-    // </div>
-    //     </DialogHeader>
-    //     <div className="flex items-center space-x-2">
-    //       <div className="grid flex-1 gap-2">
-    //         <NewPostForm />
-    //       </div>
-
-    //     </div>
-    //   </DialogContent>
-    // </Dialog>
-
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
         <Button variant="ghost">
