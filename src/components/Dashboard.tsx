@@ -18,7 +18,6 @@ export default function Dashboard() {
         <main>
           <Outlet />
         </main>
-        <Toaster />
       </div>
     </SidebarProvider>
   )

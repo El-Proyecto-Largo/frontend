@@ -3,87 +3,115 @@ import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Link } from 'react-router-dom';
+import { Button, buttonVariants } from "@/components/ui/button"
+import { Link, useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
+import { z } from 'zod';
+import { useMutation, useQueryClient } from 'react-query';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
+import { toast } from 'sonner';
 
-function Login() {
-  const [message, setMessage] = useState('');
-  const [loginName, setLoginName] = useState('');
-  const [loginPassword, setPassword] = useState('');
+const formSchema = z.object({
+  login: z
+    .string()
+    .min(1, {message: ""})
+    .max(50, {message: ""}),
+  password: z
+    .string()
+    .min(1, {message: ""})
+    .max(128, {message: ""}),
+})
 
-  async function doLogin(event: any): Promise<void> {
-    event.preventDefault();
+export default function Login({ setLoginState }) {
+  const navigate = useNavigate();
 
-    let obj = { login: loginName, password: loginPassword };
-    let js = JSON.stringify(obj);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      login: "",
+      password: "",
+    }
+  });
 
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/login`,
-        { method: 'POST', body: js, headers: { 'Content-Type': 'application/json' } });
+  const mutation = useMutation({
+    mutationFn: async (doLogin) => {
+      return axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/login`,
+        {
+          login: doLogin.login,
+          password: doLogin.password,
+        }
+      );
+    },
+    onSuccess: (res) => {
+      const data = res.data;
+      const user = {
+        token: data.token,
+        userId: data.userId,
+        username: data.username,
+        email: data.email,
+      }
+      localStorage.setItem('userData', JSON.stringify(user));
 
-      let res = JSON.parse(await response.text());
-
-      if (res.error) {
-        setMessage(res.error);
+      navigate('/');
+    },
+    onError: (error) => {
+      const data = error.response.data;
+      if (data.active == false && data.userId) {
+        localStorage.setItem('userData', JSON.stringify({
+          userId: data.userId,
+        }));
+        setLoginState("verify");
       }
       else {
-        let user = { token: res.token, userId: res.userId, username: res.username, email: res.email}
-        localStorage.setItem('userData', JSON.stringify(user));
-
-        setMessage('');
-        window.location.href = '/';
+        toast.error(data.error)
       }
     }
-    catch (error: any) {
-      alert(error.toString());
-      return;
-    }
-  };
+  });
 
-  function handleSetLoginName(e: any): void {
-    setLoginName(e.target.value);
-  }
-
-  function handleSetPassword(e: any): void {
-    setPassword(e.target.value);
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+    mutation.mutate(values);
   }
 
   return (
-    <Card className="mx-auto max-w-sm">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Overcastly</CardTitle>
-        <CardDescription>Please enter your email (or username) and password.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Login</Label>
-            <Input id="loginName" type="email" placeholder="name@example.com" required onChange={handleSetLoginName}/>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="loginPassword" type="password" required onChange={handleSetPassword}/>
-          </div>
-          <div className='flex gap-3'>
-            
-            <Button type="submit" className="w-full" onClick={doLogin}>
-              Login
-            </Button>
-            
-            <Link to="/register">
-              <Button type="submit" variant="secondary" className="w-full">
-                Register
-              </Button>                
-            </Link>
-            
-          </div>
-        </div>
-      </CardContent>
-      <CardFooter className='justify-center align-middle'>
-      {message}
-      </CardFooter>
-    </Card>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-3'>
+        <FormField
+          control={form.control}
+          name='login'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Username or Email
+              </FormLabel>
+              <FormControl>
+                <Input placeholder='Username or Email' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='password'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Password
+              </FormLabel>
+              <FormControl>
+                <Input type='password' placeholder='Password' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type='submit'>Login</Button>
+      </form>
+    </Form>
   );
 };
-
-export default Login;

@@ -61,7 +61,7 @@ export default function PostPage() {
     onSuccess: (replies) => {
       setRepliesJSON(replies);
     },
-    enabled: Boolean(post),
+    // enabled: Boolean(post),
   })
 
   if (postLoading) {

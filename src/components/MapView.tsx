@@ -16,34 +16,19 @@ import { Circle as CircleStyle, Fill, Icon, Stroke, Style } from 'ol/style.js';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import VectorSource from 'ol/source/Vector';
+import { useNavigate } from 'react-router-dom';
+
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
+import { Calendar1Icon } from 'lucide-react';
+import { dateFromObjectId } from '@/lib/utils';
 
 export default function MapView({ className }: any) {
-  const [toggleStates, setToggleStates] = useState({ layer1: true, layer2: true, layer3: true });
-  const [vectorSource, setVectorSource] = useState(null);
-
-  async function getPinGeoJSON() {
-    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/getpins`);
-    return response;
-  }
-
-  const {
-    data: geoJSON,
-    error,
-    isLoading,
-  } = useQuery("geoJSONData", getPinGeoJSON, {
-    onSuccess: (geoJSON) => {
-      const source = new VectorSource({
-        features: new GeoJSON().readFeatures(geoJSON.data, {
-          featureProjection: "EPSG:3857"
-        })
-      });
-
-      console.log(geoJSON.data);
-
-      setVectorSource(source);
-    },
-
-  });
+  const [toggleStates, setToggleStates] = useState({ radar: true, cyclones: true, warnings: true, goes: false, pins: true });
+  const navigate = useNavigate();
 
   const handleToggle = (key) => {
     console.log(`Toggling ${key}`); // <-- This should log on every toggle
@@ -55,13 +40,18 @@ export default function MapView({ className }: any) {
 
   useEffect(() => {
     const vectorLayer = new VectorLayer({
-      source: vectorSource,
+      source: new VectorSource({
+        format: new GeoJSON(),
+        url: `${import.meta.env.VITE_BACKEND_URL}/api/getpins`
+      }),
       style: new Style({
         image: new Icon({ 
-          anchor: [0.5, 1], src: 'src/assets/pin.png',
+          anchor: [0.5, 1],
+          src: "src/assets/pin.svg",
           width: 25,
         })
-      })
+      }),
+      visible: toggleStates.pins,
     });
 
     const map: Map = new Map({
@@ -69,36 +59,36 @@ export default function MapView({ className }: any) {
         new TileLayer({
           source: new OSM(),
         }),
-        // new TileLayer({
-        //   source: new TileWMS({
-        //     url: 'https://mesonet.agron.iastate.edu/cgi-bin/wms/goes_east.cgi?',
-        //     params: {'LAYERS': 'fulldisk_ch13', 'TILED': true},
-        //     serverType: 'geoserver',
-        //     // Countries have transparency, so do not fade tiles:
-        //     transition: 0,
-        //   }),
-        //   opacity: 0.25,
-        //   visible: toggleStates.layer0,
-        // }),
         new TileLayer({
-          source: new TileArcGISRest({
-            url: 'https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity/MapServer',
+          source: new TileWMS({
+            url: 'https://mesonet.agron.iastate.edu/cgi-bin/wms/goes_east.cgi?',
+            params: {'LAYERS': 'fulldisk_ch13', 'TILED': true},
+            serverType: 'geoserver',
+            // Countries have transparency, so do not fade tiles:
+            transition: 0,
           }),
-          visible: toggleStates.layer1,
+          opacity: 0.5,
+          visible: toggleStates.goes,
         }),
         new TileLayer({
           source: new TileArcGISRest({
             url: "https://mapservices.weather.noaa.gov/tropical/rest/services/tropical/NHC_tropical_weather/MapServer",
           }),
-          visible: toggleStates.layer2,
+          visible: toggleStates.cyclones,
           opacity: 0.25,
         }),
         new TileLayer({
           source: new TileArcGISRest({
             url: "https://mapservices.weather.noaa.gov/eventdriven/rest/services/WWA/watch_warn_adv/MapServer",
           }),
-          visible: toggleStates.layer3,
+          visible: toggleStates.warnings,
           opacity: 0.5,
+        }),
+        new TileLayer({
+          source: new TileArcGISRest({
+            url: 'https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity/MapServer',
+          }),
+          visible: toggleStates.radar,
         }),
         vectorLayer,
       ],
@@ -110,13 +100,85 @@ export default function MapView({ className }: any) {
       }),
     });
 
+    const info = document.getElementById("info");
+    const infoTitle = document.getElementById("info-title")
+    const infoBody = document.getElementById("info-body")
+    const infoDate = document.getElementById("info-date")
+    let currentFeature;
+    const displayFeatureInfo = function (pixel, target) {
+      const feature = target.closest('.ol-control')
+        ? undefined
+        : map.forEachFeatureAtPixel(pixel, function (feature) {
+            return feature;
+          });
+      if (feature) {
+        document.body.style.cursor = "pointer";
+        info.style.left = pixel[0] + 'px';
+        info.style.top = pixel[1] + 'px';
+        if (feature !== currentFeature) {
+          info.style.visibility = 'visible';
+          infoBody.innerText = feature.get('body');
+          const id = feature.get('id');
+          const dateString = `${dateFromObjectId(id).toLocaleTimeString()} · ${dateFromObjectId(id).toDateString()} `;
+          infoDate.innerText = dateString;
+          infoTitle.innerText = feature.get('title');
+        }
+      } else {
+        info.style.visibility = 'hidden';
+        document.body.style.cursor = "default";
+      }
+      currentFeature = feature;
+    };
+
+    map.on('pointermove', function (evt) {
+      if (evt.dragging) {
+        info.style.visibility = 'hidden';
+        currentFeature = undefined;
+        document.body.style.cursor = "default";
+        return;
+      }
+      const pixel = map.getEventPixel(evt.originalEvent);
+      displayFeatureInfo(pixel, evt.originalEvent.target);
+    });
+
+    map.on('click', function (evt) {
+      displayFeatureInfo(evt.pixel, evt.originalEvent.target);
+      console.log("clicked on thing");
+      document.body.style.cursor = "default";
+      if (currentFeature) {
+        navigate(`/posts/${currentFeature.values_.id}`);
+      }
+    });
+    
+
+    map.getTargetElement().addEventListener('pointerleave', function () {
+      currentFeature = undefined;
+      info.style.visibility = 'hidden';
+      document.body.style.cursor = "default";
+    });
+
     return () => map.dispose();
-  }, [toggleStates, vectorSource]);
+  }, [toggleStates, navigate]);
 
   return (
     <div>
       <MapControls toggleStates={toggleStates} setToggleStates={setToggleStates} />
-      <div id="map" className={className} />
+      <div id="map" className={className}>
+        <HoverCard open={true}>
+          <HoverCardContent className="absolute z-50 left-1/2 translate-x-1/4 inline-block invisible" id="info">
+            <div className="space-y-1">
+              <h4 className='text-sm font-semibold' id="info-title">Title</h4>
+              <p className="text-sm" id="info-body">Body</p>
+              <div className="flex items-center pt-2">
+                <Calendar1Icon className="mr-2 h-4 w-4 opacity-70" />
+                <span className="text-xs text-muted-foreground" id="info-date">
+                  Joined Date
+                </span>
+              </div>
+            </div>
+          </HoverCardContent>
+        </HoverCard>
+      </div>
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import LatestPosts from "@/components/LatestPosts";
 import MapView from "@/components/MapView";
 import {
   Card,
@@ -13,7 +14,7 @@ import WeatherConditions from "@/components/WeatherConditions";
 export default function OverviewPage() {
   return (
     <>
-      <div className="flex p-10 gap-5">
+      <div className="grid columns-1 justify-center md:flex p-10 gap-5">
         {/* <div className="grow">
           <Card>
             <CardHeader>
@@ -25,7 +26,15 @@ export default function OverviewPage() {
             </CardContent>
           </Card>
         </div> */}
-        <WeatherConditions />
+        <div>
+          <WeatherConditions />
+        </div>
+        <div>
+          <LatestPosts />
+        </div>
+        <div>
+          <LatestPosts />
+        </div>
      </div>
     </>
   );

@@ -22,6 +22,7 @@ import { Button } from "./ui/button"
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
 import { Label } from "./ui/label"
 import { SearchIcon } from "lucide-react"
+import { ScrollArea } from "./ui/scroll-area"
 
 const zipSchema = z.object({
   zip: z
@@ -117,7 +118,7 @@ export default function LocationForm() {
         </form>
       </Form>
 
-      <div>
+      <ScrollArea className="h-full w-full">
         {locationResults ? 
           <RadioGroup onValueChange={(coordinates) => onOptionChange(coordinates) } className="flex flex-col gap-4">
             {locationResults.map((location: any) =>
@@ -133,7 +134,7 @@ export default function LocationForm() {
         : <p className="text-sm text-muted-foreground">
           You can search and set your location here. <em>Note:</em> Selecting an option will refresh the page.
           </p>}
-      </div>
+      </ScrollArea>
     </>
   );
 

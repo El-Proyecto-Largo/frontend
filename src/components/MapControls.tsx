@@ -1,7 +1,7 @@
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
-import { SendHorizonalIcon, ImageIcon, RadarIcon, CloudAlertIcon, TornadoIcon, CloudAlert } from "lucide-react";
+import { SendHorizonalIcon, ImageIcon, RadarIcon, CloudAlertIcon, TornadoIcon, CloudAlert, EarthIcon } from "lucide-react";
 import { QueryClient, useIsMutating, useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import { RefObject, useEffect, useState } from "react";
@@ -42,7 +42,7 @@ export default function MapControls({ toggleStates, setToggleStates }) {
       {/* radar toggle */}
       <HoverCard>
         <HoverCardTrigger asChild>
-          <Button variant="ghost" className={getClass(toggleStates, "layer1")} onClick={() => handleToggle("layer1")}>
+          <Button variant="ghost" className={getClass(toggleStates, "radar")} onClick={() => handleToggle("radar")}>
             <RadarIcon/>
           </Button>
         </HoverCardTrigger>
@@ -59,7 +59,7 @@ export default function MapControls({ toggleStates, setToggleStates }) {
 
       <HoverCard>
         <HoverCardTrigger asChild>
-          <Button variant="ghost" className={getClass(toggleStates, "layer2")} onClick={() => handleToggle("layer2")}>
+          <Button variant="ghost" className={getClass(toggleStates, "cyclones")} onClick={() => handleToggle("cyclones")}>
             <TornadoIcon />
           </Button>
         </HoverCardTrigger>
@@ -76,7 +76,7 @@ export default function MapControls({ toggleStates, setToggleStates }) {
 
       <HoverCard>
         <HoverCardTrigger asChild>
-          <Button variant="ghost" className={getClass(toggleStates, "layer3")} onClick={() => handleToggle("layer3")}>
+          <Button variant="ghost" className={getClass(toggleStates, "warnings")} onClick={() => handleToggle("warnings")}>
             <CloudAlert />
           </Button>
         </HoverCardTrigger>
@@ -91,6 +91,23 @@ export default function MapControls({ toggleStates, setToggleStates }) {
             <p><strong>Advisory</strong>: The expected weather condition has a pretty good chance of occurring, even a likely chance of occurring, but typically an advisory is used for less severe type of weather conditions. A Wind Advisory might be issued or a Freezing Rain Advisory issued instead of a High Wind Warning or an ice Storm Warning.</p>
             </p>
             <span className="text-xs text-muted-foreground">Visit <a className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600" href="https://mapservices.weather.noaa.gov/eventdriven/rest/services/WWA/watch_warn_adv/MapServer">the NOAA API page</a> for more information.</span>
+          </div>
+        </HoverCardContent>
+      </HoverCard>
+
+      <HoverCard>
+        <HoverCardTrigger asChild>
+          <Button variant="ghost" className={getClass(toggleStates, "goes")} onClick={() => handleToggle("goes")}>
+            <EarthIcon />
+          </Button>
+        </HoverCardTrigger>
+        <HoverCardContent className="w-80">
+          <div>
+            <h4 className="text-sm font-semibold">GOES East Imagery</h4>
+            <p className="text-sm">
+              From NOAA: <em>The Geostationary Operational Environmental Satellite (GOES) – R Series is the nation’s most advanced fleet of geostationary weather satellites. The GOES-R Series significantly improves the detection and observation of environmental phenomena that directly affect public safety, protection of property and our nation’s economic health and prosperity. </em>
+            </p>
+            <span className="text-xs text-muted-foreground">Visit <a className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600" href="https://mesonet.agron.iastate.edu/ogc/">the Iowa Environmental Mesonet</a> for more information.</span>
           </div>
         </HoverCardContent>
       </HoverCard>

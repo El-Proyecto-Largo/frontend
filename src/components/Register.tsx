@@ -1,118 +1,190 @@
 import { useState } from 'react';
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
-import { Link } from 'react-router-dom';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
+import { toast } from 'sonner';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
+import axios from 'axios';
 
-export default function Register() {
-  const [message, setMessage] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
+const formSchema = z.object({
+  username: z
+    .string()
+    .min(1, { message: "" })
+    .max(50, { message: "Username is too long." }),
+  email: z
+    .string()
+    .min(1, { message: "" })
+    .max(100, { message: "Email is too long." })
+    .email({ message: "Please enter a valid email address." }),
+  firstName: z
+    .string()
+    .min(1, { message: "" })
+    .max(50, { message: "First name is too long." }),
+  lastName: z
+    .string()
+    .min(1, { message: "" })
+    .max(50, { message: "Last name is too long." }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters." }),
+  confirmPassword: z
+    .string()
+}).refine((values) => {
+  return values.password === values.confirmPassword;
+},
+  {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  }
+);
 
-  async function doRegister(event: any): Promise<void> {
-    event.preventDefault();
+export default function Register({ setLoginState }) {
 
-    var obj = {
-        username: username,
-        password: password,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-    };
-    var js = JSON.stringify(obj);
-
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/registeruser`,
-        { method: 'POST', body: js, headers: { 'Content-Type': 'application/json' } });
-
-      var res = JSON.parse(await response.text());
-
-      if (res.error) {
-        setMessage(res.error);
-      }
-      else {
-        var user = { firstName: res.firstName, lastName: res.lastName, id: res.id }
-        localStorage.setItem('user_data', JSON.stringify(user));
-
-        setMessage('');
-        window.location.href = '/login';
-      }
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      firstName: "",
+      lastName: "",
+      password: "",
+      confirmPassword: "",
     }
-    catch (error: any) {
-      alert(error.toString());
-      return;
+  });
+
+  const mutation = useMutation({
+    mutationFn: async (doRegister) => {
+      return axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/initialregisteruser`,
+        {
+          username: doRegister.username,
+          email: doRegister.email,
+          firstName: doRegister.firstName,
+          lastName: doRegister.lastName,
+          password: doRegister.password,
+        }
+      );
+    },
+    onSuccess: (res) => {
+      const data = res.data;
+      localStorage.setItem('userData', JSON.stringify({
+        userId: data.insertedId,
+      }));
+      setLoginState("verify");
+    },
+    onError: (error) => {
+      const data = error.response.data;
+      toast.error(data.error);
     }
-  };
+  });
 
-  function handleSetFirstName(e: any): void {
-    setFirstName(e.target.value);
-  }
-
-  function handleSetLastName(e: any): void {
-    setLastName(e.target.value);
-  }
-
-  function handleSetEmail(e: any): void {
-    setEmail(e.target.value);
-  }
-
-  function handleSetUsername(e: any): void {
-    setUsername(e.target.value);
-  }
-
-  function handleSetPassword(e: any): void {
-    setPassword(e.target.value);
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+    mutation.mutate(values);
   }
 
   return (
-    <Card className="mx-auto max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-3xl">Register</CardTitle>
-        <CardDescription>Enter your information to create an account</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="username">Username</Label>
-          <Input id="username" placeholder="@johndoe" required onChange={handleSetUsername} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="first-name">First Name</Label>
-          <Input id="first-name" placeholder="John" required onChange={handleSetFirstName}/>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="last-name">Last Name</Label>
-          <Input id="last-name" placeholder="Doe" required onChange={handleSetLastName}/>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="me@example.com" required onChange={handleSetEmail}/>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" required onChange={handleSetPassword}/>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="confirm-password">Confirm Password</Label>
-          <Input id="confirm-password" type="password" required />
-        </div>
-        <div className="flex gap-3">
-            <Link to="/login">
-                <Button variant="secondary" className="w-full">
-                    Cancel
-                </Button> 
-            </Link>
-            <Button className="w-full" onClick={doRegister}>Register</Button>
-        </div>
-      </CardContent>
-      <CardFooter className='justify-center align-middle'>
-        {message}
-      </CardFooter>
-    </Card>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-3'>
+        <FormField
+          control={form.control}
+          name='username'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Username
+              </FormLabel>
+              <FormControl>
+                <Input placeholder='person' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='email'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Email
+              </FormLabel>
+              <FormControl>
+                <Input type='email' placeholder='person@example.com' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='firstName'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                First Name
+              </FormLabel>
+              <FormControl>
+                <Input placeholder='Johnny' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='lastName'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Last Name
+              </FormLabel>
+              <FormControl>
+                <Input placeholder='Appleseed' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='password'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Password
+              </FormLabel>
+              <FormControl>
+                <Input type='password' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='confirmPassword'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Confirm Password
+              </FormLabel>
+              <FormControl>
+                <Input type='password' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type='submit'>Register</Button>
+
+      </form>
+    </Form>
   );
 };

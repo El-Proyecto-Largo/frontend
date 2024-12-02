@@ -1,4 +1,4 @@
-import { Settings, LayoutDashboard, MapIcon, UserRound, CircleHelp, LogOutIcon } from "lucide-react"
+import { Settings, LayoutDashboard, MapIcon, UserRound, CircleHelp, LogOutIcon, Users } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -27,7 +27,7 @@ const mainItems = [
   {
     title: "Social",
     url: "/posts",
-    icon: UserRound,
+    icon: Users,
   },
 ]
 
