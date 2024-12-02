@@ -34,5 +34,9 @@ export function convertToBase64(file) {
 }
 
 export function convertMilesToDegrees(miles) {
-  return miles * 0.05625;
+  return parseFloat(miles * 0.05625).toFixed(2);
+}
+
+export function convertDegreesToMiles(degrees) {
+  return parseFloat(degrees * 17.778).toFixed(2)
 }

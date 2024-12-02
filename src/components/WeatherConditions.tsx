@@ -91,7 +91,7 @@ export default function WeatherConditions() {
   }
 
   return (
-    <div className="max-w-sm">
+    <div>
       <Card>
         <CardHeader>
           <div className="flex justify-between">

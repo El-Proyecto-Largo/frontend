@@ -35,7 +35,7 @@ export default function LocationDialog() {
       <SheetTrigger>
         <Button variant="ghost">
           <MapPinIcon />
-          {locationMetadata ? <p className="">{locationMetadata.name}</p> : <p>No location!</p>}
+          {locationMetadata ? <p className="hidden md:block max-w-[32ch] truncate">{locationMetadata.name}</p> : <p>No location!</p>}
         </Button>
       </SheetTrigger>
       <SheetContent className="sm:max-w-md">

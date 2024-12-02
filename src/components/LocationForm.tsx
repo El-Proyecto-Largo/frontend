@@ -24,6 +24,8 @@ import { Label } from "./ui/label"
 import { SearchIcon } from "lucide-react"
 import { ScrollArea } from "./ui/scroll-area"
 
+// NOTE: all references to "zip" in this file dont actually mean zip and are instead just general search queries :-)
+
 const zipSchema = z.object({
   zip: z
     .string()
@@ -33,7 +35,6 @@ const zipSchema = z.object({
 
 export default function LocationForm() {
   const queryClient = useQueryClient();
-  const [zipCode, setZipCode] = useState(localStorage.getItem('zip'));
 
   const [tempLatitude, setTempLatitude] = useState(localStorage.getItem('latitude'));
   const [tempLongitude, setTempLongitude] = useState(localStorage.getItem('longitude'));
@@ -51,7 +52,6 @@ export default function LocationForm() {
 
   const zipMutation = useMutation({
     mutationFn: (zipCodeInput) => {
-      console.log(zipCodeInput.zip);
       return axios.get(`https://nominatim.openstreetmap.org/search`, {
         params: {
           q: zipCodeInput.zip,
@@ -65,7 +65,7 @@ export default function LocationForm() {
       setLocationResults(coordinates.data);
     },
     onError: (error) => {
-      toast("Unable to get coordinates from the zip code: " + error);
+      toast.warning("Unable to get coordinates from the zip code: " + error);
     }
   });
 
@@ -104,7 +104,7 @@ export default function LocationForm() {
             render={({ field }) => (
               <FormItem className="flex flex-1">
                 <FormControl>
-                  <Input placeholder="Search for a location..." defaultValue={zipCode ? zipCode : ""} {...field} />
+                  <Input placeholder="Search for a location..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -118,7 +118,7 @@ export default function LocationForm() {
         </form>
       </Form>
 
-      <ScrollArea className="h-full w-full">
+      <ScrollArea className="h-[calc(100vh-8rem)] w-full">
         {locationResults ? 
           <RadioGroup onValueChange={(coordinates) => onOptionChange(coordinates) } className="flex flex-col gap-4">
             {locationResults.map((location: any) =>

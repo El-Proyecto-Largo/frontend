@@ -23,7 +23,6 @@ export default function TopBar() {
         <div className="flex gap-1">
           {/* <PostThreadAuthor authorId={JSON.parse(localStorage.getItem("userData")).userId} /> */}
           <NewPostDialog />
-
           <LocationDialog />
         </div>
       </div>

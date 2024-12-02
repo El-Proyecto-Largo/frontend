@@ -53,9 +53,9 @@ export default function PostControls( {id, type}: {id: string, type: string} ) {
 
   return (
     <div>
-      <Button variant="ghost">
+      {/* <Button variant="ghost">
         <Edit2Icon />
-      </Button>
+      </Button> */}
       <Dialog>
         <DialogTrigger>
           <Button variant="ghost">

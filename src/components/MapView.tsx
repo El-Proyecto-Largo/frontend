@@ -47,7 +47,7 @@ export default function MapView({ className }: any) {
       style: new Style({
         image: new Icon({ 
           anchor: [0.5, 1],
-          src: "src/assets/pin.svg",
+          src: "/pin.svg",
           width: 25,
         })
       }),

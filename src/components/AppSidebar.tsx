@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "react-router-dom"
+import ProfilePicture from "./ProfilePicture"
 
 // Menu items.
 const mainItems = [
@@ -32,16 +33,16 @@ const mainItems = [
 ]
 
 const otherItems = [
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
-  },
-  {
-    title: "Help",
-    url: "/help",
-    icon: CircleHelp,
-  },
+  // {
+  //   title: "Settings",
+  //   url: "/settings",
+  //   icon: Settings,
+  // },
+  // {
+  //   title: "Help",
+  //   url: "/help",
+  //   icon: CircleHelp,
+  // },
 ]
 
 export default function AppSidebar() {
