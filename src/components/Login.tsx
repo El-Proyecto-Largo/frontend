@@ -17,12 +17,12 @@ import { toast } from 'sonner';
 const formSchema = z.object({
   login: z
     .string()
-    .min(1, {message: ""})
-    .max(50, {message: ""}),
+    .min(1, { message: "" })
+    .max(50, { message: "" }),
   password: z
     .string()
-    .min(1, {message: ""})
-    .max(128, {message: ""}),
+    .min(1, { message: "" })
+    .max(128, { message: "" }),
 })
 
 export default function Login({ setLoginState }) {
@@ -79,39 +79,42 @@ export default function Login({ setLoginState }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-3'>
-        <FormField
-          control={form.control}
-          name='login'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Username or Email
-              </FormLabel>
-              <FormControl>
-                <Input placeholder='Username or Email' {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='password'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Password
-              </FormLabel>
-              <FormControl>
-                <Input type='password' placeholder='Password' {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type='submit'>Login</Button>
-      </form>
+      <div className='flex flex-col gap-3'>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <FormField
+            control={form.control}
+            name='login'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Username or Email
+                </FormLabel>
+                <FormControl>
+                  <Input placeholder='Username or Email' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='password'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Password
+                </FormLabel>
+                <FormControl>
+                  <Input type='password' placeholder='Password' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type='submit' className='w-full mt-5'>Login</Button>
+        </form>
+        <Button className='text-muted-foreground hover:text-primary' variant="link" onClick={() => setLoginState("recovery")}>Forgot Password?</Button>
+      </div>
     </Form>
   );
 };

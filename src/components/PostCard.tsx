@@ -24,7 +24,6 @@ export interface PostCardProps {
 
 // TODO
 
-
 export default function PostCard({ title, body, image, latitude, longitude, authorId, tags, id }: PostCardProps) {
   return (
     <Link to={`/posts/${id}`}>

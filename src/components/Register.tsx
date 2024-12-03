@@ -183,7 +183,6 @@ export default function Register({ setLoginState }) {
           )}
         />
         <Button type='submit'>Register</Button>
-
       </form>
     </Form>
   );

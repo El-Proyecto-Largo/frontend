@@ -104,7 +104,7 @@ export default function NewPostForm({ setOpen }) {
       setTags([]);
     },
     onError: (error) => {
-      toast("Unable to create new post: " + error);
+      toast.error("Unable to create new post: " + error);
     }
   });
 

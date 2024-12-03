@@ -33,11 +33,11 @@ const mainItems = [
 ]
 
 const otherItems = [
-  // {
-  //   title: "Settings",
-  //   url: "/settings",
-  //   icon: Settings,
-  // },
+  {
+    title: "Settings",
+    url: "/settings",
+    icon: Settings,
+  },
   // {
   //   title: "Help",
   //   url: "/help",

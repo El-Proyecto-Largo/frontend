@@ -37,7 +37,7 @@ export default function PostControls( {id, type}: {id: string, type: string} ) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["repliesData"]);
-      toast("Your post has been deleted.");
+      toast.success("Your post has been deleted.");
       if (type === "main") {
         navigate(`/posts`);
       }

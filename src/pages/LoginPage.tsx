@@ -5,6 +5,7 @@ import Login from '../components/Login.tsx';
 import { useState } from 'react';
 import Register from '@/components/Register.tsx';
 import Verify from '@/components/Verify.tsx';
+import Recovery from '@/components/Recovery.tsx';
 
 export function LoginPage() {
   const [loginState, setLoginState] = useState("login")
@@ -19,13 +20,16 @@ export function LoginPage() {
     else if (loginState == "verify") {
       return <Verify setLoginState={setLoginState}/>
     }
+    else if (loginState == "recovery") {
+      return <Recovery setLoginState={setLoginState}/>
+    }
   }
 
   function topRightButton() {
     if (loginState == "login") {
       return <Button variant="ghost" className='absolute right-4 top-4' onClick={() => setLoginState("register")}>Register</Button>
     }
-    else if (loginState == "register" || loginState == "verify") {
+    else if (loginState == "register" || loginState == "verify" || loginState == "recovery") {
       return <Button variant="ghost" className='absolute right-4 top-4' onClick={() => setLoginState("login")}>Login</Button>
     }
   }

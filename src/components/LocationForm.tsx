@@ -30,7 +30,7 @@ const zipSchema = z.object({
   zip: z
     .string()
     .min(1, { message: "Enter a search query!" } )
-    .max(50, { message: "Your search query is too long!" })
+    .max(50, { message: "Your search query is too long!" } )
 });
 
 export default function LocationForm() {
@@ -82,9 +82,9 @@ export default function LocationForm() {
     console.log("Set coordinates:")
     console.log(lat);
     console.log(lon);
-    
 
-    setTimeout(function() {
+
+    setTimeout(function () {
       window.location.reload();
     }, 500)
   }
@@ -98,7 +98,7 @@ export default function LocationForm() {
     <>
       <Form {...zipForm}>
         <form onSubmit={zipForm.handleSubmit(onZipSubmit)} className="flex gap-3 mt-3 mb-3">
-          <FormField 
+          <FormField
             control={zipForm.control}
             name="zip"
             render={({ field }) => (
@@ -119,11 +119,11 @@ export default function LocationForm() {
       </Form>
 
       <ScrollArea className="h-[calc(100vh-8rem)] w-full">
-        {locationResults ? 
-          <RadioGroup onValueChange={(coordinates) => onOptionChange(coordinates) } className="flex flex-col gap-4">
+        {locationResults ?
+          <RadioGroup onValueChange={(coordinates) => onOptionChange(coordinates)} className="flex flex-col gap-4">
             {locationResults.map((location: any) =>
               <div key={location.place_id} className="flex gap-4">
-                <RadioGroupItem id={location.place_id} value={JSON.stringify(location)} className="align-middle"/>
+                <RadioGroupItem id={location.place_id} value={JSON.stringify(location)} className="align-middle" />
                 <Label htmlFor={location.place_id} className="flex flex-col gap-1">
                   <p>{location.name}</p>
                   <p className="text-sm text-muted-foreground">{location.display_name}</p>
@@ -131,8 +131,8 @@ export default function LocationForm() {
               </div>
             )}
           </RadioGroup>
-        : <p className="text-sm text-muted-foreground">
-          You can search and set your location here. <em>Note:</em> Selecting an option will refresh the page.
+          : <p className="text-sm text-muted-foreground">
+            You can search and set your location here. <em>Note:</em> Selecting an option will refresh the page.
           </p>}
       </ScrollArea>
     </>

@@ -55,13 +55,13 @@ export default function Verify({ setLoginState }) {
     },
     onSuccess: (res) => {
       localStorage.removeItem("userData");
-      toast("Successfully verified account. Please log in");
+      toast.success("Successfully verified account. Please log in");
       setLoginState("login");
     },
     onError: (error) => {
       const data = error.response.data;
       setMessage(data.error);
-      toast(data.error);
+      toast.error(data.error);
     }
   });
 

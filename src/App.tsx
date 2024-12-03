@@ -11,110 +11,15 @@ import MapPage from './pages/MapPage';
 import SocialPage from './pages/SocialPage';
 import { useEffect } from 'react';
 import PostPage from './pages/PostPage';
-import RegisterPage from './pages/RegisterPage';
 
 const queryClient = new QueryClient();
-import axios from 'axios';
 import OverviewPage from './pages/OverviewPage';
-import { convertMilesToDegrees } from './lib/utils';
-import VerifyPage from './pages/VerifyPage';
 import PrivateRoute from './components/PrivateRoute';
 import { Toaster } from 'sonner';
+import SettingsPage from './pages/SettingsPage';
+import PageNotFound from './components/PageNotFound';
 
 function App() {
-  const [isValidToken, setIsValidToken] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // function PrivateRoute() {
-  //   if (!isLoading) {
-  //     return isValidToken ? <Outlet /> : <Navigate to="/login" replace />;
-  //   }
-  //   else if (isLoading) {
-  //     return <></>
-  //   }
-  // }
-  
-  function AnonymousRoute() {
-    return isValidToken ? <Navigate to="/" replace /> : <Outlet />;
-  }
-
-  function isValidJSON(json: string | null) {
-    try {
-      JSON.parse(json);
-    }
-    catch (e) {
-      return false
-    }
-    return true;
-  }
-
-  // useEffect(() => {
-  //   const userDataString = localStorage.getItem("userData");
-  //   const userData = isValidJSON(userDataString) ? JSON.parse(userDataString) : null;
-  //   const token = userData ? userData["token"] : null;
-  //   const userId = userData ? userData["userId"] : null;
-
-  //   const checkToken = async () => {
-  //     setIsLoading(true);
-
-  //     try {
-  //       const headers = {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer: ${token}`,
-  //       }
-  //       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/authenticate`, {
-  //         headers: headers,
-  //       });
-  //     }
-  //     catch (e) {
-  //       console.log(e);
-  //       setIsValidToken(false);
-  //     }
-  //     finally {
-  //       setIsLoading(false);
-  //     }
-
-
-
-  //     if (token && userId) {
-        
-  //       try {
-  //         const headers = {
-  //           'Content-Type': 'application/json',
-  //           'Authorization': `Bearer: ${token}`,
-  //         }
-  //         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/authenticate`, {
-  //           headers: headers,
-  //         });
-    
-  //         if (response.status === 200) {
-  //           setIsValidToken(true);
-  //           setIsLoading(false);
-  //         }
-  //         else if (response.status == 403) {
-  //           setIsValidToken(false);
-  //           setIsLoading(false);
-  //           localStorage.removeItem('userData');
-  //         }
-  //         else {
-  //           setIsValidToken(false);
-  //           setIsLoading(false);
-  //         }
-  //       } catch (error) {
-  //         localStorage.removeItem('userData');
-  //         console.log(error);
-  //       }
-  //     }
-  //     else {
-  //       setIsValidToken(false);
-  //       setIsLoading(false);
-  //     }
-  //   }
-
-  //   checkToken();
-
-  // }, [])
-
   useEffect(() => {
     const userLatitude = localStorage.getItem('latitude');
     const userLongitude = localStorage.getItem('longitude')
@@ -137,6 +42,8 @@ function App() {
             <Route path='map' element={<MapPage />} />
             <Route path='posts' element={<SocialPage />} />
             <Route path='posts/:id' element={<PostPage />} />
+            <Route path='settings' element={<SettingsPage />} />
+            <Route path='*' element={<PageNotFound />} />
           </Route>
           <Route path='login' element={<LoginPage />} />
         </Routes>
