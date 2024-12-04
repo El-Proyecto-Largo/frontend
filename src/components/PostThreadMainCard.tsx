@@ -16,11 +16,33 @@ import PostThreadAuthor from "./PostThreadAuthor";
 import { dateFromObjectId, getUserData } from "@/lib/utils";
 import PostControls from "./PostControls";
 import { useState, useEffect } from "react";
+import { useMutation, useQuery } from "react-query";
+import { MapPinIcon } from "lucide-react";
+import axios from "axios";
 
 // TODO
 
 export default function PostThreadMainCard({ title, body, image, latitude, longitude, authorId, tags, id }: PostCardProps) {
   const [userData, setUserData] = useState([]);
+  const [location, setLocation] = useState("");
+
+  async function getLocation() {
+    const response = await axios.get(`https://api.weather.gov/points/${latitude},${longitude}`);
+    return response;
+  }
+
+  const {
+    data: locationData,
+    error,
+    isLoading,
+  } = useQuery("postLocationData", getLocation, {
+    onSuccess: (data) => {
+      console.log(data);
+      const city = data.data.properties.relativeLocation.properties.city;
+      const state = data.data.properties.relativeLocation.properties.state;
+      setLocation(`${city}, ${state}`);
+    },
+  })
 
   useEffect(() => {
     setUserData(getUserData());
@@ -34,9 +56,12 @@ export default function PostThreadMainCard({ title, body, image, latitude, longi
           {userData["userId"] === authorId ? <PostControls id={id} type="main"/> : <></>}
         </div>
         <CardTitle>{title}</CardTitle>
-        <div className="flex flex-row flex-wrap gap-1">
-          {tags ? tags.map((tag, index) => (<Badge key={index}>{tag}</Badge>)) : <></>}
-        </div>
+        {location ? <div className="flex items-center"><MapPinIcon className="h-4 text-muted-foreground" />  <p className="text-sm text-muted-foreground">{location}</p></div> : <></> }
+
+        {tags?.length > 0 ? 
+        <div className="flex flex-row flex-wrap gap-1">{tags.map((tag, index) => (<Badge key={index}>{tag}</Badge>))}</div>
+        : <></>}
+
       </CardHeader>
 
       <CardContent className="gap-2">

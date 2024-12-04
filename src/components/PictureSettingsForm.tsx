@@ -93,7 +93,7 @@ export default function PictureSettingsForm() {
 
   return (
     <Form {...form}>
-      <div className="flex justify-center">
+      <div className="flex justify-center p-5">
         <Avatar className="w-1/2 h-1/2">
           <AvatarImage src={author?.data.image}/>
           {/* <AvatarFallback>{author?.data.firstName[0] + author?.data.lastName[0]}</AvatarFallback> */}

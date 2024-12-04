@@ -13,6 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
 import { toast } from 'sonner';
+import { LoaderCircleIcon } from "lucide-react"
 
 const formSchema = z.object({
   login: z
@@ -113,6 +114,11 @@ export default function Login({ setLoginState }) {
           />
           <Button type='submit' className='w-full mt-5'>Login</Button>
         </form>
+        {mutation.isLoading ? 
+        <div className="flex justify-center align-middle items-center">
+          <LoaderCircleIcon className="animate-spin" /> 
+        </div>
+        : <></>}
         <Button className='text-muted-foreground hover:text-primary' variant="link" onClick={() => setLoginState("recovery")}>Forgot Password?</Button>
       </div>
     </Form>
